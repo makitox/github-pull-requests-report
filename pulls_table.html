@@ -24,7 +24,7 @@
                     <div class="cell"><a href="${str(pull.html_url)}">${str(pull.id)}</a></div>
                     <div class="cell"><a href="${str(pull.html_url)}">${str(pull.number)}</a></div>
                     <div class="cell"><a href="${str(pull.head.repo.html_url)}">${str(pull.head.repo.name)}</a></div>
-                    <div class="cell">${str(pull.user.name)}</div>
+                    <div class="cell"><a href="${pull.user.html_url}">${str(pull.user.name)}</a></div>
                     <div class="cell">${str(pull.title)}</div>
 
                     <div class="cell">
@@ -61,10 +61,10 @@
                               review_statuses[review.user.name] = review_list
                         %>
                         % for reviewer, review_list in review_statuses.items():
-                      <li><strong>${reviewer}</strong> - ${review_list[0].state} at ${(review_list[0].submitted_at).strftime("%d %b %Y")}</li>
+                      <li><a href="${reviewer.html_url}"><strong>${reviewer}</strong></a> - ${review_list[0].state} at ${(review_list[0].submitted_at).strftime("%d %b %Y")}</li>
                         % endfor
                         % for revs in pull.get_review_requests()[0]:
-                      <li><strong>${revs.name}</strong> - PENDING</li>
+                      <li><a href="${revs.html_url}"><strong>${revs.name}</strong></a> - PENDING</li>
                         % endfor
                     </ul>
                 </div>
