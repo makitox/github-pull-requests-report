@@ -33,7 +33,7 @@
                         Mergeable State: ${str(pull.mergeable_state)}<br/>
                         % if pull.get_labels().totalCount != 0:
                         Labels: <br/>
-                        <ul>
+                        <ul class="labels">
                             % for label in pull.get_labels():
                                <li style="background-color:#${label.color}">${label.name} : ${label.description}</li>
                             % endfor
