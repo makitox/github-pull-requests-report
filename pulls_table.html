@@ -42,7 +42,7 @@
                     </div>
 
                 <div class="cell">
-                    <ul>
+                    <ul class="assignee">
                         % for assignee in pull.assignees:
                             <li><a href="${assignee.html_url}">${assignee.name}</a></li>
                         % endfor
@@ -50,7 +50,7 @@
                 </div>
                 <div class="cell">
                     <p>Review statuses:</p>
-                    <ul>
+                    <ul class="reviews">
                         <%
                           review_statuses = {}
                           for review in pull.get_reviews():
@@ -61,10 +61,10 @@
                               review_statuses[review.user.name] = review_list
                         %>
                         % for reviewer, review_list in review_statuses.items():
-                            <li>${reviewer} - ${review_list[0].state} at ${(review_list[0].submitted_at).strftime("%d %b %Y")}</li>
+                      <li><strong>${reviewer}</strong> - ${review_list[0].state} at ${(review_list[0].submitted_at).strftime("%d %b %Y")}</li>
                         % endfor
                         % for revs in pull.get_review_requests()[0]:
-                            <li>${revs.name} - PENDING</li>
+                      <li><strong>${revs.name}</strong> - PENDING</li>
                         % endfor
                     </ul>
                 </div>
