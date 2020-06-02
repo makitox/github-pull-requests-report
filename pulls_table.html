@@ -1,0 +1,81 @@
+<%def name="pulltable(table_id,pullist)">
+<%! import datetime %>
+        <div class="table" id="${table_id}">
+                <div class="row header">
+                    <div class="cell">#</div>
+                    <div class="cell">PR Id</div>
+                    <div class="cell">PR number</div>
+                    <div class="cell">Repo</div>
+                    <div class="cell">Author</div>
+                    <div class="cell">Title</div>
+                    <div class="cell">Flags</div>
+                    <div class="cell">Assignees</div>
+                    <div class="cell">Reviewers</div>
+                    <div class="cell">Created</div>
+                    <div class="cell">Updated</div>
+                    <div class="cell">Since updated, days</div>
+                </div>
+            % for i in range(len(pullist)):
+            <%
+                pull = pullist[i]
+            %>
+                 <div class="row">
+                    <div class="cell">${i}</div>
+                    <div class="cell"><a href="${str(pull.html_url)}">${str(pull.id)}</a></div>
+                    <div class="cell"><a href="${str(pull.html_url)}">${str(pull.number)}</a></div>
+                    <div class="cell"><a href="${str(pull.head.repo.html_url)}">${str(pull.head.repo.name)}</a></div>
+                    <div class="cell">${str(pull.user.name)}</div>
+                    <div class="cell">${str(pull.title)}</div>
+
+                    <div class="cell">
+                        Draft: ${str(pull.draft)}<br/>
+                        Mergeable: ${str(pull.mergeable)}<br/>
+                        Mergeable State: ${str(pull.mergeable_state)}<br/>
+                        % if pull.get_labels().totalCount != 0:
+                        Labels: <br/>
+                        <ul>
+                            % for label in pull.get_labels():
+                               <li style="background-color:#${label.color}">${label.name} : ${label.description}</li>
+                            % endfor
+                        </ul>
+                        % endif
+                    </div>
+
+                <div class="cell">
+                    <ul>
+                        % for assignee in pull.assignees:
+                            <li><a href="${assignee.html_url}">${assignee.name}</a></li>
+                        % endfor
+                    </ul>
+                </div>
+                <div class="cell">
+                    <p>Review statuses:</p>
+                    <ul>
+                        <%
+                          review_statuses = {}
+                          for review in pull.get_reviews():
+                              if review.user.name not in review_statuses:
+                                  review_statuses[review.user.name] = []
+                              review_list = review_statuses[review.user.name]
+                              review_list.append(review)
+                              review_statuses[review.user.name] = review_list
+                        %>
+                        % for reviewer, review_list in review_statuses.items():
+                            <li>${reviewer} - ${review_list[0].state} at ${(review_list[0].submitted_at).strftime("%d %b %Y")}</li>
+                        % endfor
+                        % for revs in pull.get_review_requests()[0]:
+                            <li>${revs.name} - PENDING</li>
+                        % endfor
+                    </ul>
+                </div>
+                <div class="cell">${str(pull.created_at.strftime("%d %b %Y"))}</div>
+                <div class="cell">${str(pull.updated_at.strftime("%d %b %Y"))}</div>
+                <%
+                    updated = pull.updated_at
+                    days_since_last_update = datetime.datetime.today() - updated
+                %>
+                <div class="cell">${str(days_since_last_update.days)}</div>
+            </div>
+            % endfor
+        </div>
+</%def>
