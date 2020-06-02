@@ -3,6 +3,8 @@ from mako.template import Template
 from colorama import Fore, Style
 import datetime
 
+from globals import CONFIGURATION, REPORT_FILE_NAME, APPCONFIG_SECTION
+
 
 def generate_report(organizations, teamfilter, repofilter):
     print(f"{Fore.BLUE}Collect data: {Style.RESET_ALL}", end='')
@@ -149,7 +151,7 @@ def create_rich_html_report(
         repo_filter):
     look_up = TemplateLookup(directories=['.'])
     html_template = Template(filename='report_html_template.html', lookup=look_up)
-    filename = str(datetime.datetime.today().strftime("%d-%b-%Y__%H-%M") + "_pull_requests_report.html")
+    filename = datetime.datetime.today().strftime(CONFIGURATION[APPCONFIG_SECTION][REPORT_FILE_NAME])
     html_report = open(filename, "w")
     html_report.write(html_template.render(
         PullsFullList=pulls_full_list,
