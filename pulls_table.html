@@ -35,7 +35,7 @@
                         Labels: <br/>
                         <ul class="labels">
                             % for label in pull.get_labels():
-                               <li style="background-color:#${label.color}">${label.name} : ${label.description}</li>
+                               <li style="background-color:#${label.color}">${label.name}</li>
                             % endfor
                         </ul>
                         % endif
@@ -61,7 +61,7 @@
                               review_statuses[review.user.name] = review_list
                         %>
                         % for reviewer, review_list in review_statuses.items():
-                      <li><a href="${reviewer.html_url}"><strong>${reviewer}</strong></a> - ${review_list[0].state} at ${(review_list[0].submitted_at).strftime("%d %b %Y")}</li>
+                      <li><strong>${reviewer}</strong>- ${review_list[0].state} at ${(review_list[0].submitted_at).strftime("%d %b %Y")}</li>
                         % endfor
                         % for revs in pull.get_review_requests()[0]:
                       <li><a href="${revs.html_url}"><strong>${revs.name}</strong></a> - PENDING</li>
