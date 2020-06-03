@@ -49,9 +49,17 @@
         font-weight: 500;
         white-space: nowrap;
         color: #63a5be;
+        text-align: center;
       }
       .row .cell:nth-child(9) {
         min-width: 150px;
+      }
+      .row .cell:nth-child(1),
+      .row .cell:nth-child(3),
+      .row .cell:nth-child(10),
+      .row .cell:nth-child(11),
+      .row .cell:nth-child(12) {
+        text-align: center;
       }
       .row .cell:nth-child(1) {
         padding-left: 10px;
@@ -148,7 +156,7 @@
         margin-bottom: 3px;
       }
       .reviews li:last-of-type, .assignee li:last-of-type {
-        margin-bottom: 0px;
+        margin-bottom: 0;
       }
       /* specific styles for configuration page*/
       #Configuration h3:not(:first-of-type) {
