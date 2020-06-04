@@ -61,15 +61,15 @@
                               review_statuses[review.user.name] = review_list
                         %>
                         % for reviewer, review_list in review_statuses.items():
-                      <li><strong>${reviewer}</strong>- ${review_list[0].state} at ${(review_list[0].submitted_at).strftime("%d %b %Y")}</li>
+                      <li><strong>${reviewer}</strong> - <a href="${review_list[0].html_url}" >${review_list[0].state}</a> at ${(review_list[0].submitted_at).strftime("%d %b %Y %H:%M")}</li>
                         % endfor
                         % for revs in pull.get_review_requests()[0]:
                       <li><a href="${revs.html_url}"><strong>${revs.name}</strong></a> - PENDING</li>
                         % endfor
                     </ul>
                 </div>
-                <div class="cell">${str(pull.created_at.strftime("%d %b %Y"))}</div>
-                <div class="cell">${str(pull.updated_at.strftime("%d %b %Y"))}</div>
+                <div class="cell">${str(pull.created_at.strftime("%d %b %Y %H:%M"))}</div>
+                <div class="cell">${str(pull.updated_at.strftime("%d %b %Y %H:%M"))}</div>
                 <%
                     updated = pull.updated_at
                     days_since_last_update = datetime.datetime.today() - updated
