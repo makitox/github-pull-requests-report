@@ -203,6 +203,7 @@
     <div class="tabcontent_inner">
         <nav class="subnav">
            <div class="subnav_items">
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
             % for repoName in PullsByRepo.keys():
                 <button class="innertablinks" onclick="openInnerTab(event, '${repoName.replace(" ", "")}_byrepo')">${repoName} (${len(PullsByRepo[repoName])})</button>
             % endfor
@@ -223,7 +224,7 @@
     <div class="tabcontent_inner">
         <nav class="subnav">
            <div class="subnav_items">
-             <button class="innertablinks" onclick="openInnerTab(event, '')">Reset filter</button>
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
             % for creator in PullsByCreator.keys():
                 <button class="innertablinks" onclick="openInnerTab(event, '${creator.replace(" ", "")}_bycreator')">${creator} (${len(PullsByCreator[creator])})</button>
             % endfor
@@ -244,7 +245,7 @@
     <div class="tabcontent_inner">
         <nav class="subnav">
            <div class="subnav_items">
-             <button class="innertablinks" onclick="openInnerTab(event, '')">Reset filter</button>
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
             % for assignee in PullsByAssignee.keys():
                 <button class="innertablinks" onclick="openInnerTab(event, '${assignee.replace(" ", "")}_byassignee')">${assignee} (${len(PullsByAssignee[assignee])})</button>
             % endfor
@@ -268,7 +269,7 @@
     <div class="tabcontent_inner">
         <nav class="subnav">
            <div class="subnav_items">
-             <button class="innertablinks" onclick="openInnerTab(event, '')">Reset filter</button>
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
            % for reviewer, pull_list in PullsByReviewer.items():
                <button class="innertablinks" onclick="openInnerTab(event, '${reviewer.replace(" ", "")}_byreviewer')">${reviewer} (${len(pull_list)})</button>
            % endfor
