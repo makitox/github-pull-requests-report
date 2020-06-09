@@ -13,7 +13,7 @@ def generate_report(organizations, teamfilter, repofilter):
     for org in organizations:
         organizations_repos[org.login] = get_org_repositories_list(org, repofilter)
 
-    PullsFullList = get_filtered_pulls_list (organizations_repos, teamfilter)
+    PullsFullList = get_filtered_pulls_list(organizations_repos, teamfilter)
     PullsByCreator = sort_pulls_by_creator(PullsFullList)
     PullsByRepo = sort_pulls_by_repo(PullsFullList)
     PullsByAssignee = sort_pulls_by_assignee(PullsFullList)
@@ -69,23 +69,52 @@ def sort_pulls_by_assignee(pulls_full_list):
 
 def get_pulls_reviewers(pulls_full_list):
     sorted_pulls = {}
+    # reviews is a list of reviews in chronological order (freshest first)
+    # there is no distinguish by reviewer, only change date/time
+    # we need to filter reviews list and get latest (only one per reviewer) review state
+    # first we get dict with reviewer.name : list of PRs
+    # second step is to filter duplicated PRs in reviewer list
 
     for pull in pulls_full_list:
-        # get all started reviews:
+        # get all started reviews
         for reviewer in pull.get_reviews():
             if reviewer.user.name not in sorted_pulls:
                 sorted_pulls[reviewer.user.name] = []
-            pull_list = sorted_pulls[reviewer.user.name]
-            pull_list.append(pull)
-            sorted_pulls[reviewer.user.name] = pull_list
+                pull_list = sorted_pulls[reviewer.user.name]
+                pull_list.append(pull)
+                sorted_pulls[reviewer.user.name] = pull_list
+            else:
+                pull_list = sorted_pulls[reviewer.user.name]
+                new_pull = True
+                id = pull.id
+                for user_pull in pull_list:
+                    if user_pull.id == id:
+                        new_pull = False
+                        break
+                if new_pull:
+                    pull_list.append(pull)
+                    sorted_pulls[reviewer.user.name] = pull_list
 
         # get all pending reviews:
         for revs in pull.get_review_requests()[0]:
             if revs.name not in sorted_pulls:
                 sorted_pulls[revs.name] = []
-            pull_list = sorted_pulls[revs.name]
-            pull_list.append(pull)
-            sorted_pulls[revs.name] = pull_list
+                pull_list = sorted_pulls[revs.name]
+                pull_list.append(pull)
+                sorted_pulls[revs.name] = pull_list
+            else:
+                pull_list = sorted_pulls[revs.name]
+                new_pull = True
+                id = pull.id
+                for user_pull in pull_list:
+                    if user_pull.id == id:
+                        new_pull = False
+                        break
+                if new_pull:
+                    pull_list.append(pull)
+                    sorted_pulls[reviewer.user.name] = pull_list
+
+
 
     return sorted_pulls
 
