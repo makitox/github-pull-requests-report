@@ -3,7 +3,7 @@ from mako.template import Template
 from colorama import Fore, Style
 import datetime
 
-from globals import CONFIGURATION, REPORT_FILE_NAME, APPCONFIG_SECTION
+from globals import CONFIGURATION, HTML_REPORT_FILE_NAME, APPCONFIG_SECTION
 
 
 def generate_report(organizations, teamfilter, repofilter):
@@ -151,7 +151,7 @@ def create_rich_html_report(
         repo_filter):
     look_up = TemplateLookup(directories=['.'])
     html_template = Template(filename='report_html_template.html', lookup=look_up)
-    filename = datetime.datetime.today().strftime(CONFIGURATION[APPCONFIG_SECTION][REPORT_FILE_NAME])
+    filename = datetime.datetime.today().strftime(CONFIGURATION[APPCONFIG_SECTION][HTML_REPORT_FILE_NAME])
     html_report = open(filename, "w")
     html_report.write(html_template.render(
         PullsFullList=pulls_full_list,

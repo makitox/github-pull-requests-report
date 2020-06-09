@@ -1,7 +1,8 @@
 import configparser
 
 APPCONFIG_SECTION = "appconfig"
-REPORT_FILE_NAME = "report_file_name"
+HTML_REPORT_FILE_NAME = "html_report_file_name"
+JSON_REPORT_FILE_NAME = "json_report_file_name"
 ACCESS_TOKEN = "access_token"
 ORGANIZATION = "organization"
 
