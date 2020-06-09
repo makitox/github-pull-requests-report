@@ -223,6 +223,7 @@
     <div class="tabcontent_inner">
         <nav class="subnav">
            <div class="subnav_items">
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Reset filter</button>
             % for creator in PullsByCreator.keys():
                 <button class="innertablinks" onclick="openInnerTab(event, '${creator.replace(" ", "")}_bycreator')">${creator} (${len(PullsByCreator[creator])})</button>
             % endfor
@@ -243,6 +244,7 @@
     <div class="tabcontent_inner">
         <nav class="subnav">
            <div class="subnav_items">
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Reset filter</button>
             % for assignee in PullsByAssignee.keys():
                 <button class="innertablinks" onclick="openInnerTab(event, '${assignee.replace(" ", "")}_byassignee')">${assignee} (${len(PullsByAssignee[assignee])})</button>
             % endfor
@@ -266,6 +268,7 @@
     <div class="tabcontent_inner">
         <nav class="subnav">
            <div class="subnav_items">
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Reset filter</button>
            % for reviewer, pull_list in PullsByReviewer.items():
                <button class="innertablinks" onclick="openInnerTab(event, '${reviewer.replace(" ", "")}_byreviewer')">${reviewer} (${len(pull_list)})</button>
            % endfor
@@ -318,8 +321,9 @@
     function openInnerTab(evt, tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("innertabcontent");
+        tabStatus = !tabName ? "block" : "none";
         for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
+            tabcontent[i].style.display = tabStatus;
         }
         tablinks = document.getElementsByClassName("innertablinks");
         for (i = 0; i < tablinks.length; i++) {
