@@ -1,3 +1,11 @@
+# ignore Python and PyCharm dev stuff
+__pycache__/
+.idea/
+
+# development stuff
+gprr/
+devconfig.ini
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
