@@ -7,7 +7,7 @@ from github.NamedUser import NamedUser
 from github.PullRequest import PullRequest
 from github.Repository import Repository
 
-from GprrModels import PrContainer, AccountsFilter, RepositoriesFilter, GprrUser, GprrPR, GprrPrFlag, GprrPrLabel, \
+from GprrModels import PrContainer, GprrUser, GprrPR, GprrPrFlag, GprrPrLabel, \
     GprrReview, Filter, GprrRepository
 from globals import CONFIGURATION, APPCONFIG_SECTION, HTML_REPORT_FILE_NAME, JSON_REPORT_FILE_NAME
 
