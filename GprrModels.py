@@ -30,7 +30,7 @@ class GprrReview(object):
     Review representation in GPRR
     """
 
-    def __init(
+    def __init__(
             self,
             user: GprrUser,
             state: str,
@@ -56,7 +56,7 @@ class GprrPrFlag(object):
     ):
         assert flag is not None
         assert value is not None
-        self.flag = flag
+        self.flag_name = flag
         self.value = value
 
 
@@ -85,11 +85,14 @@ class GprrPR(object):
         self.number: int = None
         self.url: str = None
         self.repository: str = None
+        self.repository_url: str = None
         self.title: str = None
         self.flags: List[GprrPrFlag] = []
         self.labels: List[GprrPrLabel] = []
         self.creator: GprrUser = None
         self.reviews: List[GprrReview] = []
+        self.reviews_pending: List[GprrReview] = []
+        self.reviews_pending_teams: List[GprrReview] = []
         self.assignees: List[GprrUser] = []
         self.created: datetime = None
         self.updated: datetime = None
@@ -125,7 +128,7 @@ class PrContainer(object):
             title: str = ""
     ):
         self.title = title
-        self.container: Dict[str, List[GprrPR]] = {}
+        self.container: Dict[str, List[GprrPR]] = dict()
 
     def append_item(
             self,
@@ -135,7 +138,7 @@ class PrContainer(object):
         assert item is not None
 
         if item_group in self.container.keys():
-            self.container[item_group].add(item)
+            self.container[item_group].append(item)
         else:
             self.container[item_group] = [item]
 
@@ -151,7 +154,7 @@ class Filter(Generic[T]):
     ):
         assert title is not None
         self.title = title
-        self.items: [T] = []
+        self.items: List[T] = []
 
     def contains(self, item: T) -> bool:
         return self.contains_item_id(item.id)
@@ -159,7 +162,7 @@ class Filter(Generic[T]):
     def add(self, item: T):
         assert item is not None
         if not self.contains_item_id(item.id):
-            self.items.add(item)
+            self.items.append(item)
 
     def contains_item_id(self, item_id: int) -> bool:
         assert item_id is not None

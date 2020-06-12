@@ -1,0 +1,335 @@
+<!DOCTYPE html><%! import datetime %>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pull requests report for ${datetime.datetime.today().strftime("%d %b %Y")}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Rubik", sans-serif;
+      }
+      h2 {
+        padding: 20px 15px;
+      }
+      h3 {
+        padding: 20px 15px;
+        border-bottom:1px solid #63a5be;
+      }
+      ul {
+        list-style: none;
+      }
+      .table {
+        width: 100%;
+        display: table;
+        margin: 0;
+        color: #284d5b;
+        font-family: "Rubik", sans-serif;
+        font-size: 12px;
+      }
+      .row {
+        display: table-row;
+        width: 100%;
+      }
+      .cell {
+        position: relative;
+        vertical-align: middle;
+        display: table-cell;
+        border-bottom: 1px solid #63a5be;
+        padding: 8px 5px;
+        font-weight: 300;
+      }
+      .row.header .cell {
+        font-weight: 500;
+        white-space: nowrap;
+        color: #63a5be;
+      }
+      .row .cell:nth-child(9) {
+        min-width: 150px;
+      }
+      .row .cell:nth-child(1),
+      .row .cell:nth-child(3),
+      .row .cell:nth-child(10),
+      .row .cell:nth-child(11),
+      .row .cell:nth-child(12),
+      .row.header .cell:nth-child(1),
+      .row.header .cell:nth-child(2),
+      .row.header .cell:nth-child(3),
+      .row.header .cell:nth-child(10),
+      .row.header .cell:nth-child(11),
+      .row.header .cell:nth-child(12){
+        text-align: center;
+      }
+      .row .cell:nth-child(1) {
+        padding-left: 10px;
+      }
+      .row:hover {
+        box-shadow: 0 0 10px #63a5be;
+      }
+      .row.header:hover {
+        box-shadow: none;
+      }
+      /* Style the tab */
+      .tabs {
+        overflow: hidden;
+        border-bottom: 1px solid #63a5be;
+        background-color: #a9cdda;
+      }
+      /* Style the buttons inside the tab */
+      .tabs button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+      }
+      /* Change background color of buttons on hover */
+      .tabs button:hover {
+        background-color: #63a5be;
+      }
+      /* Create an active/current tablink class */
+      .tabs button.active {
+        background-color: #284d5b;
+        color: #fff;
+      }
+
+      .tabcontent_inner {
+        display: flex;
+        min-height: calc(100% - 178px);
+      }
+      .subnav {
+        width: 200px;
+        border-right: 1px solid #63a5be;
+        position: relative;
+      }
+      .subnav_items {
+        position: sticky;
+        top: 0;
+        left: 0;
+      }
+      .subnav button {
+        display: block;
+        padding: 15px;
+        border: 0;
+        color: #333333;
+        text-transform: uppercase;
+        width: 100%;
+        text-align: left;
+        border-bottom: 1px solid #a9cdda;
+        cursor: pointer;
+          background-color: #fff;
+      }
+      .subnav button:hover {
+        background-color: #a9cdda;
+      }
+      .subnav button.active {
+        color: #fff;
+        background-color: #63a5be;
+      }
+      .subnav_content {
+        flex: 1;
+        padding: 0 25px;
+      }
+      /*!* Style the tab content *!*/
+      .innertabcontent h3{
+        margin-top: 10px;
+      }
+
+      /*!* Labels *!*/
+      .labels li {
+        padding: 3px 5px;
+        border-radius: 2px;
+        margin-bottom: 2px;
+        color: #000;
+        font-weight: 500;
+        display: inline-block;
+      }
+      .labels li:last-of-type {
+        margin-bottom: 0;
+      }
+    /* list of names */
+      .reviews li, .assignee li {
+        margin-bottom: 3px;
+      }
+      .reviews li:last-of-type, .assignee li:last-of-type {
+        margin-bottom: 0;
+      }
+      /* specific styles for configuration page*/
+      #Configuration h3:not(:first-of-type) {
+        margin-top: 20px;
+        border-top: 1px solid #63a5be;
+      }
+      #Configuration ul {
+        margin-left: 15px;
+      }
+      #Configuration ul li {
+        margin-bottom: 10px;
+        list-style-type: disc;
+        text-indent: 20px;
+      }
+
+    </style>
+</head>
+<body>
+
+<h2>Pull requests report for ${datetime.datetime.today().strftime("%d %b %Y %H:%M ")}</h2>
+<div class="tabs">
+    <button class="tablinks" onclick="openTab(event, 'Fullist')" id="defaultOpen">Full List</button>
+    <button class="tablinks" onclick="openTab(event, 'ByRepo')">By Repository</button>
+    <button class="tablinks" onclick="openTab(event, 'ByCreator')">By Creator</button>
+    <button class="tablinks" onclick="openTab(event, 'ByAssignee')">By Assignee</button>
+    <button class="tablinks" onclick="openTab(event, 'ByReviewer')">By Reviewer</button>
+    <button class="tablinks" onclick="openTab(event, 'Configuration')">Configuration</button>
+</div>
+
+<%namespace name="pullsTable" file="pulls_table_v2.html" import="pulltable"/>
+
+<div id="Fullist" class="tabcontent">
+    <h3>All opened pull requests:</h3>
+    ${pulltable(table_id='PRFullList', pullist=report_data.full_list.container[report_data.default_section])}
+</div>
+
+<div id="ByRepo" class="tabcontent">
+    <h3>Pull requests sorted by repository</h3>
+    <div class="tabcontent_inner">
+        <nav class="subnav">
+           <div class="subnav_items">
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
+            % for repoName in report_data.by_repository.container.keys():
+                <button class="innertablinks" onclick="openInnerTab(event, '${repoName.replace(" ", "")}_byrepo')">${repoName} (${len(report_data.by_repository.container[repoName])})</button>
+            % endfor
+            </div>
+        </nav>
+        <div class="subnav_content">
+          % for repoName, pullist in report_data.by_repository.container.items():
+            <div id="${repoName}_byrepo" class="innertabcontent">
+                <h3>Pull requests in ${repoName}</h3>
+                ${pulltable(table_id=str(repoName.replace(" ", ""))+'_byrepo_pulls', pullist=report_data.by_repository.container[repoName])}
+            </div>
+          % endfor
+        </div>
+    </div>
+</div>
+<div id="ByCreator" class="tabcontent">
+    <h3>Pull requests sorted by creator</h3>
+    <div class="tabcontent_inner">
+        <nav class="subnav">
+           <div class="subnav_items">
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
+            % for creator in report_data.by_author.container.keys():
+                <button class="innertablinks" onclick="openInnerTab(event, '${creator.replace(" ", "")}_bycreator')">${creator} (${len(report_data.by_author.container[creator])})</button>
+            % endfor
+            </div>
+        </nav>
+        <div class="subnav_content">
+          % for creator, pullist in report_data.by_author.container.items():
+              <div id="${creator.replace(" ", "")}_bycreator" class="innertabcontent">
+                  <h3>Pull requests created by ${creator}</h3>
+                  ${pulltable(table_id=str(creator.replace(" ", ""))+'_bycreator_pulls', pullist=pullist)}
+              </div>
+          % endfor
+        </div>
+    </div>
+</div>
+<div id="ByAssignee" class="tabcontent">
+    <h3>Pull requests sorted by Assignee</h3>
+    <div class="tabcontent_inner">
+        <nav class="subnav">
+           <div class="subnav_items">
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
+            % for assignee in report_data.by_assignee.container.keys():
+                <button class="innertablinks" onclick="openInnerTab(event, '${assignee.replace(" ", "")}_byassignee')">${assignee} (${len(report_data.by_assignee.container[assignee])})</button>
+            % endfor
+            </div>
+        </nav>
+        <div class="subnav_content">
+        % for assignee, pullist in report_data.by_assignee.container.items():
+            <div id="${assignee.replace(" ", "")}_byassignee" class="innertabcontent">
+                <h3>Pull requests assigned to ${assignee}</h3>
+                ${pulltable(table_id=str(assignee.replace(" ", ""))+'_byassignee_pulls', pullist=pullist)}
+            </div>
+        % endfor
+        </div>
+    </div>
+</div>
+<div id="ByReviewer" class="tabcontent">
+    <h3>Pull requests sorted by reviewer</h3>
+    <div class="tabcontent_inner">
+        <nav class="subnav">
+           <div class="subnav_items">
+             <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
+           % for reviewer, pull_list in report_data.by_reviewer.container.items():
+               <button class="innertablinks" onclick="openInnerTab(event, '${reviewer.replace(" ", "")}_byreviewer')">${reviewer} (${len(pull_list)})</button>
+           % endfor
+           </div>
+        </nav>
+        <div class="subnav_content">
+        % for reviewer, pull_list in report_data.by_reviewer.container.items():
+            <div id="${reviewer.replace(" ", "")}_byreviewer" class="innertabcontent">
+                <h3>Pull requests review by ${reviewer}</h3>
+                ${pulltable(table_id=str(reviewer.replace(" ", ""))+'_byreviewer_pulls', pullist=pull_list)}
+            </div>
+        % endfor
+        </div>
+    </div>
+</div>
+
+<div id="Configuration" class="tabcontent">
+    <h2>Configuration used for this report creation</h2>
+    <h3>Team members filter:</h3>
+    <ul>
+        % for user in report_data.accounts_filter.items:
+         <li>${user.name} (<a href="${user.url}">${user.login}</a>)</li>
+        % endfor
+    </ul>
+    <h3>Repositories filter:</h3>
+    <ul>
+        % for repo in report_data.repo_filter.items:
+         <li><a href="${repo.url}">${repo.name}</a> - ${repo.title}</li>
+        % endfor
+    </ul>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    document.getElementById("defaultOpen").click();
+
+    function openInnerTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("innertabcontent");
+        tabStatus = !tabName ? "block" : "none";
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = tabStatus;
+        }
+        tablinks = document.getElementsByClassName("innertablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+</script>
+</body>
+</html>
