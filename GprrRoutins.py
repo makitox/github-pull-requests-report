@@ -72,12 +72,12 @@ class GprrReport(object):
 
             for review in gprr_pr.reviews:
                 if self.accounts_filter.contains_item_id(review.user.id):
-                    self.by_reviewer.append_item(gprr_pr, review.user.name)
+                    self.by_reviewer.append_item(gprr_pr, review.user.name, True)
                     marked_pr = True
 
             for assignee in gprr_pr.assignees:
                 if self.accounts_filter.contains_item_id(assignee.id):
-                    self.by_reviewer.append_item(gprr_pr, assignee.name)
+                    self.by_assignee.append_item(gprr_pr, assignee.name)
                     marked_pr = True
 
             if marked_pr:
@@ -92,13 +92,14 @@ class GprrReport(object):
         gprr_pr.id = pr.id
         gprr_pr.number = pr.number
         gprr_pr.url = pr.html_url
-        gprr_pr.repository = pr.head.repo.name
-        gprr_pr.repository_url = pr.head.repo.html_url
+        print(gprr_pr.url)
+        gprr_pr.repository = self.__convert_repo(pr.head.repo)
+
         gprr_pr.title = pr.title
         gprr_pr.creator = self.__convert_user(pr.user)
         gprr_pr.created = pr.created_at
         gprr_pr.updated = pr.updated_at
-        gprr_pr.since_updated = datetime.datetime.today() - gprr_pr.updated
+        gprr_pr.since_updated = (datetime.datetime.today() - gprr_pr.updated).days
 
         for assignee in pr.assignees:
             gprr_pr.assignees.append(self.__convert_user(assignee))
@@ -164,13 +165,21 @@ class GprrReport(object):
         return usr
 
     def __convert_repo(self, repo: Repository) -> GprrRepository:
-        assert repo is not None
-        return GprrRepository(
-            id=repo.id,
-            title=repo.description,
-            url=repo.html_url,
-            name=repo.name
-        )
+
+        if repo is not None:
+            return GprrRepository(
+                id=repo.id,
+                title=repo.description,
+                url=repo.html_url,
+                name=repo.name)
+        else:
+            return GprrRepository(
+                id=-1,
+                title="",
+                url="#",
+                name="unknown repository (might be private fork")
+
+
 
 
     def generate_html_report(

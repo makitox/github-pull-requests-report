@@ -9,18 +9,20 @@ class GprrUser(object):
 
     def __init__(
             self,
-            login: str = None,
-            name: str = None,
-            url: str = None,
-            id: int = None,
+            login: str,
+            name: str,
+            url: str,
+            id: int
     ):
         assert login is not None
-        assert name is not None
         assert url is not None
-        assert login is not None
+        assert id is not None
 
         self.login = login
-        self.name = name
+        if name is None:  # in case if user not fill in Name field in profile
+            self.name = login
+        else:
+            self.name = name
         self.id = id
         self.url = url
 
@@ -84,8 +86,7 @@ class GprrPR(object):
         self.id: int = None
         self.number: int = None
         self.url: str = None
-        self.repository: str = None
-        self.repository_url: str = None
+        self.repository: GprrRepository = None
         self.title: str = None
         self.flags: List[GprrPrFlag] = []
         self.labels: List[GprrPrLabel] = []
@@ -111,7 +112,7 @@ class GprrRepository(object):
             name: str,
     ):
         assert id is not None
-        assert title is not None
+        # assert title is not None
         assert url is not None
         assert name is not None
         self.id = id
@@ -133,12 +134,21 @@ class PrContainer(object):
     def append_item(
             self,
             item: GprrPR,
-            item_group: str = ""
+            item_group: str = "",
+            uniq: bool = False
     ):
         assert item is not None
 
         if item_group in self.container.keys():
-            self.container[item_group].append(item)
+            if uniq:
+                uniq_item = True
+                for i in self.container[item_group]:
+                    if i.id == item.id:
+                        uniq_item = False
+                if uniq_item:
+                    self.container[item_group].append(item)
+            else:
+                self.container[item_group].append(item)
         else:
             self.container[item_group] = [item]
 
