@@ -7,7 +7,6 @@ from colorama import Fore, Style
 from GprrRoutins import GprrReport
 from globals import CONFIGURATION, DEFAULT_CONFIG_FILE, APPCONFIG_SECTION, TEAM_FILTER_SECTION, REPO_FILTER_SECTION, \
     ACCESS_TOKEN, ORGANIZATION, HTML_REPORT_FILE_NAME
-from htmlreport import generate_report
 
 
 

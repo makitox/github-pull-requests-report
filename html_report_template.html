@@ -1,5 +1,4 @@
-<%! import datetime %>
-<!DOCTYPE html>
+<!DOCTYPE html><%! import datetime %>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -191,11 +190,11 @@
     <button class="tablinks" onclick="openTab(event, 'Configuration')">Configuration</button>
 </div>
 
-<%namespace name="pullsTable" file="pulls_table.html" import="pulltable"/>
+<%namespace name="pullsTable" file="pulls_table2.html" import="pulltable"/>
 
 <div id="Fullist" class="tabcontent">
     <h3>All opened pull requests:</h3>
-    ${pulltable(table_id='PRFullList', pullist=PullsFullList)}
+    ${pulltable(table_id='PRFullList', pullist=report_data.full_list.container[report_data.default_section])}
 </div>
 
 <div id="ByRepo" class="tabcontent">
@@ -204,16 +203,16 @@
         <nav class="subnav">
            <div class="subnav_items">
              <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
-            % for repoName in PullsByRepo.keys():
-                <button class="innertablinks" onclick="openInnerTab(event, '${repoName.replace(" ", "")}_byrepo')">${repoName} (${len(PullsByRepo[repoName])})</button>
+            % for repoName in report_data.by_repository.container.keys():
+                <button class="innertablinks" onclick="openInnerTab(event, '${repoName.replace(" ", "")}_byrepo')">${repoName} (${len(report_data.by_repository.container[repoName])})</button>
             % endfor
             </div>
         </nav>
         <div class="subnav_content">
-          % for repoName, pullist in PullsByRepo.items():
+          % for repoName, pullist in report_data.by_repository.container.items():
             <div id="${repoName}_byrepo" class="innertabcontent">
                 <h3>Pull requests in ${repoName}</h3>
-                ${pulltable(table_id=str(repoName.replace(" ", ""))+'_byrepo_pulls', pullist=pullist)}
+                ${pulltable(table_id=str(repoName.replace(" ", ""))+'_byrepo_pulls', pullist=report_data.by_repository.container[repoName])}
             </div>
           % endfor
         </div>
@@ -225,13 +224,13 @@
         <nav class="subnav">
            <div class="subnav_items">
              <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
-            % for creator in PullsByCreator.keys():
-                <button class="innertablinks" onclick="openInnerTab(event, '${creator.replace(" ", "")}_bycreator')">${creator} (${len(PullsByCreator[creator])})</button>
+            % for creator in report_data.by_author.container.keys():
+                <button class="innertablinks" onclick="openInnerTab(event, '${creator.replace(" ", "")}_bycreator')">${creator} (${len(report_data.by_author.container[creator])})</button>
             % endfor
             </div>
         </nav>
         <div class="subnav_content">
-          % for creator, pullist in PullsByCreator.items():
+          % for creator, pullist in report_data.by_author.container.items():
               <div id="${creator.replace(" ", "")}_bycreator" class="innertabcontent">
                   <h3>Pull requests created by ${creator}</h3>
                   ${pulltable(table_id=str(creator.replace(" ", ""))+'_bycreator_pulls', pullist=pullist)}
@@ -246,13 +245,13 @@
         <nav class="subnav">
            <div class="subnav_items">
              <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
-            % for assignee in PullsByAssignee.keys():
-                <button class="innertablinks" onclick="openInnerTab(event, '${assignee.replace(" ", "")}_byassignee')">${assignee} (${len(PullsByAssignee[assignee])})</button>
+            % for assignee in report_data.by_assignee.container.keys():
+                <button class="innertablinks" onclick="openInnerTab(event, '${assignee.replace(" ", "")}_byassignee')">${assignee} (${len(report_data.by_assignee.container[assignee])})</button>
             % endfor
             </div>
         </nav>
         <div class="subnav_content">
-        % for assignee, pullist in PullsByAssignee.items():
+        % for assignee, pullist in report_data.by_assignee.container.items():
             <div id="${assignee.replace(" ", "")}_byassignee" class="innertabcontent">
                 <h3>Pull requests assigned to ${assignee}</h3>
                 ${pulltable(table_id=str(assignee.replace(" ", ""))+'_byassignee_pulls', pullist=pullist)}
@@ -267,13 +266,13 @@
         <nav class="subnav">
            <div class="subnav_items">
              <button class="innertablinks" onclick="openInnerTab(event, '')">Show all</button>
-           % for reviewer, pull_list in PullsByReviewer.items():
+           % for reviewer, pull_list in report_data.by_reviewer.container.items():
                <button class="innertablinks" onclick="openInnerTab(event, '${reviewer.replace(" ", "")}_byreviewer')">${reviewer} (${len(pull_list)})</button>
            % endfor
            </div>
         </nav>
         <div class="subnav_content">
-        % for reviewer, pull_list in PullsByReviewer.items():
+        % for reviewer, pull_list in report_data.by_reviewer.container.items():
             <div id="${reviewer.replace(" ", "")}_byreviewer" class="innertabcontent">
                 <h3>Pull requests review by ${reviewer}</h3>
                 ${pulltable(table_id=str(reviewer.replace(" ", ""))+'_byreviewer_pulls', pullist=pull_list)}
@@ -287,14 +286,14 @@
     <h2>Configuration used for this report creation</h2>
     <h3>Team members filter:</h3>
     <ul>
-        % for member in teamfilter:
-         <li>${member}</li>
+        % for user in report_data.accounts_filter.items:
+         <li>${user.name} (<a href="${user.url}">${user.login}</a>)</li>
         % endfor
     </ul>
     <h3>Repositories filter:</h3>
     <ul>
-        % for repo in repofilter:
-         <li>${repo}</li>
+        % for repo in report_data.repo_filter.items:
+         <li><a href="${repo.url}">${repo.name}</a> - ${repo.title}</li>
         % endfor
     </ul>
 </div>
@@ -334,4 +333,3 @@
 </script>
 </body>
 </html>
-                      

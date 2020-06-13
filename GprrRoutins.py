@@ -58,34 +58,6 @@ class GprrReport(object):
         for thread in threads:
             thread.join()
 
-    # def __process_repo(self, repo: Repository):
-    #     gprr_repo = convert_repo(repo)
-    #     self.repo_filter.add(gprr_repo)
-    #     self.__process_all_prs(repo)
-    #
-    # def __process_all_prs(self, repo: Repository):
-    #     for pr in repo.get_pulls(state='open'):
-    #         marked_pr = False
-    #         gprr_pr: GprrPR = convert_pr(pr)
-    #
-    #         if self.accounts_filter.contains_item_id(gprr_pr.creator.id):
-    #             self.by_author.append_item(gprr_pr, gprr_pr.creator.name)
-    #             marked_pr = True
-    #
-    #         for review in gprr_pr.reviews:
-    #             if self.accounts_filter.contains_item_id(review.user.id):
-    #                 self.by_reviewer.append_item(gprr_pr, review.user.name, True)
-    #                 marked_pr = True
-    #
-    #         for assignee in gprr_pr.assignees:
-    #             if self.accounts_filter.contains_item_id(assignee.id):
-    #                 self.by_assignee.append_item(gprr_pr, assignee.name)
-    #                 marked_pr = True
-    #
-    #         if marked_pr:
-    #             self.by_repository.append_item(gprr_pr, repo.name)
-    #             self.full_list.append_item(gprr_pr, self.default_section)
-
     def generate_html_report(
             self,
             filename: str,
@@ -93,7 +65,7 @@ class GprrReport(object):
     ):
         assert filename is not None
         look_up = TemplateLookup(directories=['.'])
-        html_template = Template(filename='html_report_template_v2.html', lookup=look_up)
+        html_template = Template(filename='html_report_template.html', lookup=look_up)
         html_report = open(filename, "w")
         report_content = html_template.render(report_data=self)
         if minimy_html:

@@ -10,6 +10,12 @@ from GprrModels import GprrUser, GprrRepository, GprrPrLabel, GprrReview, GprrPR
 
 
 def convert_pr(pr: PullRequest) -> GprrPR:
+    """
+        Converts PyGithub pull request representation to GPRR pull request representation
+
+        :param pr: PyGithub pull request
+        :return: GPRR pull request
+    """
     gprr_pr = GprrPR()
     gprr_pr.id = pr.id
     gprr_pr.number = pr.number
@@ -28,13 +34,13 @@ def convert_pr(pr: PullRequest) -> GprrPR:
     gprr_pr.flags.append(GprrPrFlag("Mergeable", str(pr.mergeable)))
     gprr_pr.flags.append(GprrPrFlag("Mergeable State", str(pr.mergeable_state)))
 
-    for label in pr.get_labels():  # TODO: reduce additional call to GitHub
+    for label in pr.get_labels():  # this makes additional call to Github REST API
         gprr_pr.labels.append(convert_label(label))
 
     gprr_pr.initial_branch = pr.head.ref
 
     active_reviewers = []
-    for review in pr.get_reviews():  # TODO: reduce additional call to GitHub
+    for review in pr.get_reviews():  # this makes additional call to Github REST API
         reviewer = convert_user(review.user)
         if not known_review(active_reviewers, reviewer):
             active_reviewers.append(reviewer)
@@ -45,7 +51,7 @@ def convert_pr(pr: PullRequest) -> GprrPR:
                 url=review.html_url,
             )
             gprr_pr.reviews.append(gprr_review)
-    for revusr in pr.get_review_requests()[0]:  # TODO: reduce additional call to GitHub
+    for revusr in pr.get_review_requests()[0]:  # this makes additional call to Github REST API
         usr = convert_user(revusr)
         review = GprrReview(user=usr, state="PENDING")
         gprr_pr.reviews_pending.append(review)
@@ -54,6 +60,12 @@ def convert_pr(pr: PullRequest) -> GprrPR:
 
 
 def convert_label(label: Label) -> GprrPrLabel:
+    """
+        Converts GitHub label object to GPRR label object
+
+        :param label: GitHub label object
+        :return: GPRR label object
+    """
     return GprrPrLabel(
         title=label.name,
         color=label.color,
@@ -62,6 +74,12 @@ def convert_label(label: Label) -> GprrPrLabel:
 
 
 def convert_user(user: NamedUser) -> GprrUser:
+    """
+        Converts Github user object (NamedUser) to GPRR user object (GprrUser)
+
+        :param user: Github user object
+        :return: GPRR user object
+    """
     usr = GprrUser(
         login=user.login,
         name=user.name,
@@ -87,6 +105,14 @@ def convert_repo(repo: Repository) -> GprrRepository:
 
 
 def known_review(active_reviewers: List[GprrUser], user: GprrUser) -> bool:
+    """
+        Check if provided user is already in reviewers list. Github returns all reviews sorted by date,
+        and we are interested only in latest user review.
+
+        :param active_reviewers: list of reviewers
+        :param user: reviewer to check
+        :return: true if reviewer is already in the list. Checked by user id
+    """
     for rvw in active_reviewers:
         if rvw.id == user.id:
             return True
