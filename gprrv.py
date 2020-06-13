@@ -12,12 +12,8 @@ if __name__ == "__main__":
     # for debug uncomment line below
     # enable_console_debug_logging()
 
-# Check all configs
-# Only one organization
-# Create logins list
-# Create repos list
-# Start refactores GPRR routins
-# Make someone more happy
+    # TODO[makitox]: replace print() with logger
+    # TODO[makitox]: add parameters checking, especially for requared ones
 
     print(f"{Fore.BLUE}Read configuration: {Style.RESET_ALL}", end='')
     import sys
