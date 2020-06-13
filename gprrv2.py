@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Set
 
-from github import Github
+from github import Github, enable_console_debug_logging
 from colorama import Fore, Style
 
 from GprrRoutins import GprrReport
