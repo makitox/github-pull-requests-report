@@ -1,0 +1,70 @@
+<%def name="pulltable(table_id,pullist)">
+<%! import datetime %>
+        <div class="table" id="${table_id}">
+                <div class="row header">
+                    <div class="cell">#</div>
+                    <div class="cell">PR Id</div>
+                    <div class="cell">PR number</div>
+                    <div class="cell">Repo</div>
+                    <div class="cell">Base branch</div>
+                    <div class="cell">Author</div>
+                    <div class="cell">Title</div>
+                    <div class="cell">Flags</div>
+                    <div class="cell">Assignees</div>
+                    <div class="cell">Reviewers</div>
+                    <div class="cell">Created</div>
+                    <div class="cell">Updated</div>
+                    <div class="cell">Since updated, days</div>
+                </div>
+            % for i in range(len(pullist)):
+            <%
+                pull = pullist[i]
+            %>
+                 <div class="row">
+                    <div class="cell">${i}</div>
+                    <div class="cell"><a href="${str(pull.url)}">${str(pull.id)}</a></div>
+                    <div class="cell"><a href="${str(pull.url)}">${str(pull.number)}</a></div>
+                    <div class="cell"><a href="${pull.repository.url}">${pull.repository.name}</a></div>
+                    <div class="cell"><a href="#">${pull.initial_branch}</a></div>
+                    <div class="cell"><a href="${pull.creator.url}">${str(pull.creator.name)}</a></div>
+                    <div class="cell">${pull.title}</div>
+
+                    <div class="cell">
+                        % for flag in pull.flags:
+                        ${flag.flag_name}: ${flag.value}<br/>
+                        % endfor
+                        % if len(pull.labels) != 0:
+                        Labels: <br/>
+                        <ul class="labels">
+                            % for label in pull.labels:
+                               <li style="background-color:#${label.color}">${label.title}</li>
+                            % endfor
+                        </ul>
+                        % endif
+                    </div>
+
+                <div class="cell">
+                    <ul class="assignee">
+                        % for assignee in pull.assignees:
+                            <li><a href="${assignee.url}">${assignee.name}</a></li>
+                        % endfor
+                    </ul>
+                </div>
+                <div class="cell">
+                    <p>Review statuses:</p>
+                    <ul class="reviews">
+                        % for review in pull.reviews:
+                      <li><strong>${review.user.name}</strong> - <a href="${review.url}">${review.state}</a> at ${(review.submitted_at).strftime("%d %b %Y %H:%M")}</li>
+                        % endfor
+                        % for revs in pull.reviews_pending:
+                      <li><a href="${revs.url}"><strong>${revs.user.name}</strong></a> - ${revs.state}</li>
+                        % endfor
+                    </ul>
+                </div>
+                <div class="cell">${str(pull.created.strftime("%d %b %Y %H:%M"))}</div>
+                <div class="cell">${str(pull.updated.strftime("%d %b %Y %H:%M"))}</div>
+                <div class="cell">${str(pull.since_updated)}</div>
+            </div>
+            % endfor
+        </div>
+</%def>
