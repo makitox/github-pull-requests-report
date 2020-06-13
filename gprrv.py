@@ -6,9 +6,7 @@ from colorama import Fore, Style
 
 from GprrRoutins import GprrReport
 from globals import CONFIGURATION, DEFAULT_CONFIG_FILE, APPCONFIG_SECTION, TEAM_FILTER_SECTION, REPO_FILTER_SECTION, \
-    ACCESS_TOKEN, ORGANIZATION, HTML_REPORT_FILE_NAME
-
-
+    ACCESS_TOKEN, ORGANIZATION, HTML_REPORT_FILE_NAME, MINIFY_REPORT
 
 if __name__ == "__main__":
     # for debug uncomment line below
@@ -65,14 +63,15 @@ if __name__ == "__main__":
 
         html_report_name = datetime.today().strftime(
             CONFIGURATION[APPCONFIG_SECTION][HTML_REPORT_FILE_NAME])
-        # self.default_json_report_name = datetime.datetime.today().strftime(
-        #     CONFIGURATION[APPCONFIG_SECTION][JSON_REPORT_FILE_NAME])
         report = GprrReport(token=accessToken, org=organization)
-        print(f"{Fore.BLUE}Collectiong data: ", end='')
+        print(f"{Fore.BLUE}Collecting data: ", end='')
         report.collect_data(repofilter, teamfilter)
         print(f"{Fore.GREEN}Done{Style.RESET_ALL}")
         print(f"{Fore.BLUE}Generating html report: ", end='')
-        report.generate_html_report(filename=html_report_name, minimy_html=False)
+        report.generate_html_report(
+            filename=html_report_name,
+            minimy_html=bool(CONFIGURATION[APPCONFIG_SECTION][MINIFY_REPORT])
+        )
         print(f"{Fore.GREEN}Done{Style.RESET_ALL}")
     else:
         print(f"{Fore.RED}Missing {ACCESS_TOKEN}. Exit with error{Style.RESET_ALL}")

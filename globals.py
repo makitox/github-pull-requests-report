@@ -5,6 +5,7 @@ HTML_REPORT_FILE_NAME = "html_report_file_name"
 JSON_REPORT_FILE_NAME = "json_report_file_name"
 ACCESS_TOKEN = "access_token"
 ORGANIZATION = "organization"
+MINIFY_REPORT = "minify_report"
 
 
 # filter sections
