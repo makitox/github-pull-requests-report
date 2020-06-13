@@ -4,16 +4,10 @@ from typing import List, Dict, Set, Generic, TypeVar
 
 class GprrUser(object):
     """
-    User representation in GPRR
+        User representation in GPRR
     """
 
-    def __init__(
-            self,
-            login: str,
-            name: str,
-            url: str,
-            id: int
-    ):
+    def __init__(self, login: str, name: str, url: str, id: int):
         assert login is not None
         assert url is not None
         assert id is not None
@@ -32,13 +26,7 @@ class GprrReview(object):
     Review representation in GPRR
     """
 
-    def __init__(
-            self,
-            user: GprrUser,
-            state: str,
-            submitted_at: datetime = None,
-            url: str = None,
-    ):
+    def __init__(self, user: GprrUser, state: str, submitted_at: datetime = None, url: str = None,):
         assert user is not None
         assert state is not None
 
@@ -49,13 +37,11 @@ class GprrReview(object):
 
 
 class GprrPrFlag(object):
-    """ Representation of GitHub flag, used in GPRR"""
+    """
+        Representation of GitHub flag, used in GPRR
+    """
 
-    def __init__(
-            self,
-            flag: str = None,
-            value: str = None
-    ):
+    def __init__(self, flag: str, value: str):
         assert flag is not None
         assert value is not None
         self.flag_name = flag
@@ -63,14 +49,11 @@ class GprrPrFlag(object):
 
 
 class GprrPrLabel(object):
-    """ Representation of GitHub label, used in GPRR"""
+    """
+        Representation of GitHub label, used in GPRR
+    """
 
-    def __init__(
-            self,
-            title: str = None,
-            color: str = None,
-            description: str = None
-    ):
+    def __init__(self, title: str, color: str, description: str):
         assert title is not None
         assert color is not None
         assert description is not None
@@ -80,7 +63,9 @@ class GprrPrLabel(object):
 
 
 class GprrPR(object):
-    """ Representation of pull request, used in GPRR"""
+    """
+        Representation of pull request, used in GPRR
+    """
 
     def __init__(self):
         self.id: int = None
@@ -103,40 +88,44 @@ class GprrPR(object):
 
 
 class GprrRepository(object):
+    """
+        Representation of Github repository information, used in GPRR
+    """
 
-    def __init__(
-            self,
-            id: int,
-            title: str,
-            url: str,
-            name: str,
-    ):
+    def __init__(self, id: int, url: str, name: str, title: str = ""):
         assert id is not None
-        # assert title is not None
         assert url is not None
         assert name is not None
         self.id = id
-        self.title = title
+        if title is None:  # in case if creator not fill in Title field for repository
+            self.title = ""
+        else:
+            self.title = title
         self.url = url
         self.name = name
 
 
 
 class PrContainer(object):
+    """
+        Container for pull requests. Contains some logic, but basically just a wrapper on Dict type
+    """
 
-    def __init__(
-            self,
-            title: str = ""
-    ):
+    def __init__(self, title: str = ""):
         self.title = title
         self.container: Dict[str, List[GprrPR]] = dict()
 
-    def append_item(
-            self,
-            item: GprrPR,
-            item_group: str = "",
-            uniq: bool = False
-    ):
+    def append_item(self, item: GprrPR, item_group: str = "", uniq: bool = False):
+        """
+            Append item to container.
+            if uniq param is false, always add item,
+            if uniq param is true - first check if item present in dict, and if not than add
+
+            :param item: item to add
+            :param item_group: grouping key for items
+            :param uniq: check uniqness of item in provided group
+            :return:
+        """
         assert item is not None
 
         if item_group in self.container.keys():
@@ -154,14 +143,12 @@ class PrContainer(object):
 
 
 T = TypeVar('T')
-
-
 class Filter(Generic[T]):
+    """
+        Container for configuration items. Actually, another wrapper on list() with custom logic
+    """
 
-    def __init__(
-            self,
-            title: str
-    ):
+    def __init__(self, title: str):
         assert title is not None
         self.title = title
         self.items: List[T] = []
