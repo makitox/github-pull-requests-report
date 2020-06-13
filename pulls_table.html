@@ -53,6 +53,7 @@
                 <div class="cell">
                     <p>Review statuses:</p>
                     <ul class="reviews">
+
                         % for review in pull.reviews:
                       <li><strong>${review.user.name}</strong> - <a href="${review.url}">${review.state}</a> at ${(review.submitted_at).strftime("%d %b %Y %H:%M")}</li>
                         % endfor

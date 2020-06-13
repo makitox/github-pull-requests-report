@@ -7,7 +7,6 @@ ACCESS_TOKEN = "access_token"
 ORGANIZATION = "organization"
 MINIFY_REPORT = "minify_report"
 
-
 # filter sections
 REPO_FILTER_SECTION = "repositories filter"
 TEAM_FILTER_SECTION = "team filter"
