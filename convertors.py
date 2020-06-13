@@ -26,18 +26,16 @@ def convert_pr(pr: PullRequest) -> GprrPR:
     gprr_pr.created = pr.created_at
     gprr_pr.updated = pr.updated_at
     gprr_pr.since_updated = (datetime.today() - gprr_pr.updated).days
+    gprr_pr.flags.append(GprrPrFlag("Draft", str(pr.draft)))
+    gprr_pr.flags.append(GprrPrFlag("Mergeable", str(pr.mergeable)))
+    gprr_pr.flags.append(GprrPrFlag("Mergeable State", str(pr.mergeable_state)))
+    gprr_pr.initial_branch = pr.head.ref
 
     for assignee in pr.assignees:
         gprr_pr.assignees.append(convert_user(assignee))
 
-    gprr_pr.flags.append(GprrPrFlag("Draft", str(pr.draft)))
-    gprr_pr.flags.append(GprrPrFlag("Mergeable", str(pr.mergeable)))
-    gprr_pr.flags.append(GprrPrFlag("Mergeable State", str(pr.mergeable_state)))
-
     for label in pr.get_labels():  # this makes additional call to Github REST API
         gprr_pr.labels.append(convert_label(label))
-
-    gprr_pr.initial_branch = pr.head.ref
 
     active_reviewers = []
     for review in pr.get_reviews():  # this makes additional call to Github REST API
@@ -51,6 +49,7 @@ def convert_pr(pr: PullRequest) -> GprrPR:
                 url=review.html_url,
             )
             gprr_pr.reviews.append(gprr_review)
+
     for revusr in pr.get_review_requests()[0]:  # this makes additional call to Github REST API
         usr = convert_user(revusr)
         review = GprrReview(user=usr, state="PENDING")
@@ -66,11 +65,7 @@ def convert_label(label: Label) -> GprrPrLabel:
         :param label: GitHub label object
         :return: GPRR label object
     """
-    return GprrPrLabel(
-        title=label.name,
-        color=label.color,
-        description=label.description
-    )
+    return GprrPrLabel(title=label.name, color=label.color, description=label.description)
 
 
 def convert_user(user: NamedUser) -> GprrUser:
@@ -80,28 +75,14 @@ def convert_user(user: NamedUser) -> GprrUser:
         :param user: Github user object
         :return: GPRR user object
     """
-    usr = GprrUser(
-        login=user.login,
-        name=user.name,
-        id=user.id,
-        url=user.html_url
-    )
-    return usr
+    return GprrUser(login=user.login, name=user.name, id=user.id, url=user.html_url)
 
 
 def convert_repo(repo: Repository) -> GprrRepository:
     if repo is not None:
-        return GprrRepository(
-            id=repo.id,
-            title=repo.description,
-            url=repo.html_url,
-            name=repo.name)
+        return GprrRepository(id=repo.id, title=repo.description, url=repo.html_url, name=repo.name)
     else:
-        return GprrRepository(
-            id=-1,
-            title="",
-            url="#",
-            name="unknown repository (might be private fork")
+        return GprrRepository(id=-1, title="", url="#", name="unknown repository (might be private fork")
 
 
 def known_review(active_reviewers: List[GprrUser], user: GprrUser) -> bool:
