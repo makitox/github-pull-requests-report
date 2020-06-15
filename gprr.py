@@ -66,7 +66,7 @@ if __name__ == "__main__":
         print(f"{Fore.BLUE}Generating html report: ", end='')
         report.generate_html_report(
             filename=html_report_name,
-            minimy_html=bool(CONFIGURATION[APPCONFIG_SECTION][MINIFY_REPORT])
+            minimy_html=bool((CONFIGURATION[APPCONFIG_SECTION][MINIFY_REPORT]).lower() == "true")
         )
         print(f"{Fore.GREEN}Done{Style.RESET_ALL}")
     else:
