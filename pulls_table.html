@@ -35,8 +35,7 @@
                         Labels: <br/>
                         <ul class="labels">
                             % for label in pull.get_labels():
-                               <li style="background-color:#${label.color}">
-                                 <span></span>${label.name}</li>
+                               <li style="background-color:#${label.color}">${label.name}</li>
                             % endfor
                         </ul>
                         % endif
