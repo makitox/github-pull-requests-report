@@ -146,15 +146,21 @@
 
       /*!* Labels *!*/
       .labels li {
-        padding: 3px 5px;
-        border-radius: 2px;
+        padding: 3px 5px 3px 0;
         margin-bottom: 2px;
         color: #000;
         font-weight: 500;
-        display: inline-block;
+        display: block;
       }
       .labels li:last-of-type {
         margin-bottom: 0;
+      }
+      .labels li span {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+        border-radius: 2px;
       }
     /* list of names */
       .reviews li, .assignee li {

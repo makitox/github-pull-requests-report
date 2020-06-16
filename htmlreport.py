@@ -95,6 +95,7 @@ def get_pulls_reviewers(pulls_full_list):
                     pull_list.append(pull)
                     sorted_pulls[reviewer.user.name] = pull_list
 
+
         # get all pending reviews:
         for revs in pull.get_review_requests()[0]:
             if revs.name not in sorted_pulls:
@@ -113,8 +114,6 @@ def get_pulls_reviewers(pulls_full_list):
                 if new_pull:
                     pull_list.append(pull)
                     sorted_pulls[reviewer.user.name] = pull_list
-
-
 
     return sorted_pulls
 
