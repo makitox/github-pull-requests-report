@@ -145,6 +145,7 @@
 
       /*!* Labels *!*/
       .labels li {
+        position: relative;
         padding: 3px 5px 3px 0;
         margin-bottom: 2px;
         color: #000;
@@ -160,6 +161,34 @@
         height: 10px;
         margin-right: 5px;
         border-radius: 2px;
+      }
+      .labels li p {
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translateY(-100%);
+        display: none;
+        font-weight: normal;
+        padding: 10px 15px;
+        background-color: #fff;
+        border: 1px solid #a9cdda;
+        border-radius: 5px;
+      }
+      .labels li p:after {
+        content: "";
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 5px solid #a9cdda;
+
+        position: absolute;
+        transform: translateY(100%);
+        bottom: 0px;
+        left: 10px;
+      }
+      .labels li strong:hover + p {
+        display: block;
       }
     /* list of names */
       .reviews li, .assignee li {

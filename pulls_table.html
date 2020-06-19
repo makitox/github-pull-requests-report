@@ -37,7 +37,7 @@
                         Labels: <br/>
                         <ul class="labels">
                             % for label in pull.labels:
-                               <li style="background-color:#${label.color}">${label.title}</li>
+                               <li><span style="background-color:#${label.color}"></span><strong>${label.title}</strong><p></p></li>
                             % endfor
                         </ul>
                         % endif
