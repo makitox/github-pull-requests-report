@@ -54,15 +54,15 @@
       }
       .row .cell:nth-child(1),
       .row .cell:nth-child(3),
-      .row .cell:nth-child(10),
       .row .cell:nth-child(11),
       .row .cell:nth-child(12),
+      .row .cell:nth-child(13),
       .row.header .cell:nth-child(1),
       .row.header .cell:nth-child(2),
       .row.header .cell:nth-child(3),
-      .row.header .cell:nth-child(10),
       .row.header .cell:nth-child(11),
-      .row.header .cell:nth-child(12){
+      .row.header .cell:nth-child(12),
+      .row.header .cell:nth-child(13){
         text-align: center;
       }
       .row .cell:nth-child(1) {
@@ -198,17 +198,28 @@
         margin-bottom: 0;
       }
       /* specific styles for configuration page*/
+      /* specific styles for configuration page*/
       #Configuration h3:not(:first-of-type) {
-        margin-top: 20px;
+        margin-top: 30px;
         border-top: 1px solid #63a5be;
       }
       #Configuration ul {
         margin-left: 15px;
+        margin-top: 10px;
       }
       #Configuration ul li {
         margin-bottom: 10px;
         list-style-type: disc;
         text-indent: 20px;
+      }
+
+      @-moz-document url-prefix() {
+        #Configuration ul {
+          margin-left: 30px;
+        }
+        #Configuration ul li {
+          text-indent: 5px;
+        }
       }
 
     </style>
