@@ -25,7 +25,7 @@
                     <div class="cell"><a href="${str(pull.url)}">${str(pull.id)}</a></div>
                     <div class="cell"><a href="${str(pull.url)}">${str(pull.number)}</a></div>
                     <div class="cell"><a href="${pull.repository.url}">${pull.repository.name}</a></div>
-                    <div class="cell"><a href="#">${pull.initial_branch}</a></div>
+                    <div class="cell">${pull.initial_branch}</div>
                     <div class="cell"><a href="${pull.creator.url}">${str(pull.creator.name)}</a></div>
                     <div class="cell">${pull.title}</div>
 
@@ -37,7 +37,11 @@
                         Labels: <br/>
                         <ul class="labels">
                             % for label in pull.labels:
-                               <li><span style="background-color:#${label.color}"></span><strong>${label.title}</strong><p></p></li>
+                               <li><span style="background-color:#${label.color}"></span><strong>${label.title}</strong>
+                                   % if label.description:
+                                   <p>${label.description}</p>
+                                   % endif
+                               </li>
                             % endfor
                         </ul>
                         % endif
