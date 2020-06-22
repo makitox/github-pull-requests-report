@@ -39,7 +39,8 @@
                             % for label in pull.labels:
                                <li><span style="background-color:#${label.color}"></span><strong>${label.title}</strong>
                                    % if label.description:
-                                   <p>${label.description}</p>
+                                   <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAABwklEQVRIia3WwWpTURAG4K9BsKBbQZtYtAm0K6m46TuosdvSRxDrQtv3cFnUjataLVUx+BJ9BYOg1rW6ak2MizOXEzX33ij5Ycidk5l/5sw9M+fOqcYi7uAmrqAV65/wAW/xGh9reP5CE7sYYFQjQ+xHAlNhHd/D+QR72MAyzoUsx9rzsBnhG7p15PcjoxFeYmmKhNo4GNvNVlXmQ6ksD6Yg/hMPw39owk5aclmqyC9LL74M23K5Fsb/eCqXpQzXpN0NcL3C7jC4HhcLi+F0orrm0wboBNdAHOt7EXGvwqnApZA67AfnXXgXykaN0yreh6zW2G4GZ++MtCU4qnGal0s4X2NbcLUbuBjKlxqnf8Hn+G02Zkg6joL3ZwPHoSyUGP8PCq7jBvqh3JhhgIKr30AvlPUZBii4eqT2LxqtXeG0Jo/otQq7Dk7xQ74/PAnHgxkEeBU2u+OLTWlAjaSpOAlnpT5YiudJ2AmOryZ0fFcet9sVGZZhZ8z/dpnRlnzhHMpdXoWOXJahNNsq0ZXLdSoNrk2s4HzISqy9CJuiLLemSAhcwCPpJExz6T9TMmXnagK15M+Wq37/bOlL5/xN6BPxCzjhhkZKaDSgAAAAAElFTkSuQmCC"/>
+                                   <p class="hint">${label.description}</p>
                                    % endif
                                </li>
                             % endfor
