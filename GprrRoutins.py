@@ -32,7 +32,7 @@ class GprrReport(object):
         self.by_repository = PrContainer("By repository")
         self.by_assignee = PrContainer("By assignee")
 
-    def collect_data(self, repositories: Set[str] = {}, logins: Set[str] = {}):
+    def collect_data(self, repositories: Set[str] = {}, logins: Set[str] = {}, strict_to_teamfilter: bool = True):
         organization = self.github.get_organization(self.organization_str)
         if len(logins) == 0:  # no filter, add all logins
             for usr in organization.get_members():
@@ -48,13 +48,13 @@ class GprrReport(object):
         threads = list()
         if len(repositories) == 0:
             for repo in organization.get_repos(type='all'):
-                x = threading.Thread(target=process_repo, args=(self, repo,))
+                x = threading.Thread(target=process_repo, args=(self, repo, strict_to_teamfilter,))
                 threads.append(x)
                 x.start()
         else:
             for repo_str in repositories:
                 repo = organization.get_repo(repo_str)
-                x = threading.Thread(target=process_repo, args=(self, repo,))
+                x = threading.Thread(target=process_repo, args=(self, repo, strict_to_teamfilter,))
                 threads.append(x)
                 x.start()
         for thread in threads:
@@ -80,7 +80,7 @@ class GprrReport(object):
         html_report.close()
 
 
-def process_repo(report: GprrReport, repo: Repository):
+def process_repo(report: GprrReport, repo: Repository, strict_to_teamfilter: bool):
     """
         Reads repo parameters, reads all open PRs in repo and process them
 
@@ -91,10 +91,10 @@ def process_repo(report: GprrReport, repo: Repository):
 
     gprr_repo = convert_repo(repo)
     report.repo_filter.add(gprr_repo)
-    process_all_prs(report, repo)
+    process_all_prs(report, repo,  strict_to_teamfilter)
 
 
-def process_all_prs(report: GprrReport, repo: Repository):
+def process_all_prs(report: GprrReport, repo: Repository, strict_to_teamfilter: bool):
     """
         Reads repo's PRs and check, whether PR's author, reviewer or assignee in
         accounts provided
@@ -122,6 +122,10 @@ def process_all_prs(report: GprrReport, repo: Repository):
                 report.by_assignee.append_item(gprr_pr, assignee.name)
                 marked_pr = True
 
-        if marked_pr:
+        if not strict_to_teamfilter:
             report.by_repository.append_item(gprr_pr, repo.name)
             report.full_list.append_item(gprr_pr, report.default_section)
+        else:
+            if marked_pr:
+                report.by_repository.append_item(gprr_pr, repo.name)
+                report.full_list.append_item(gprr_pr, report.default_section)

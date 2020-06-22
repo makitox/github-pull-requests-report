@@ -100,7 +100,6 @@
         background-color: #284d5b;
         color: #fff;
       }
-
       .tabcontent_inner {
         display: flex;
         min-height: calc(100% - 178px);
@@ -142,7 +141,6 @@
       .innertabcontent h3{
         margin-top: 10px;
       }
-
       /*!* Labels *!*/
       .labels li {
         position: relative;
@@ -181,7 +179,6 @@
         border-left: 8px solid transparent;
         border-right: 8px solid transparent;
         border-top: 5px solid #a9cdda;
-
         position: absolute;
         transform: translateY(100%);
         bottom: 0px;
@@ -194,7 +191,7 @@
       .labels li:hover p.hint {
         display: block;
       }
-    /* list of names */
+      /* list of names */
       .reviews li, .assignee li {
         margin-bottom: 3px;
       }
@@ -216,7 +213,6 @@
         list-style-type: disc;
         text-indent: 20px;
       }
-
       @-moz-document url-prefix() {
         #Configuration ul {
           margin-left: 30px;
@@ -225,11 +221,9 @@
           text-indent: 5px;
         }
       }
-
     </style>
 </head>
 <body>
-
 <h2>Pull requests report for ${datetime.datetime.today().strftime("%d %b %Y %H:%M ")}</h2>
 <div class="tabs">
     <button class="tablinks" onclick="openTab(event, 'Fullist')" id="defaultOpen">Full List</button>
@@ -239,14 +233,11 @@
     <button class="tablinks" onclick="openTab(event, 'ByReviewer')">By Reviewer</button>
     <button class="tablinks" onclick="openTab(event, 'Configuration')">Configuration</button>
 </div>
-
 <%namespace name="pullsTable" file="pulls_table.html" import="pulltable"/>
-
 <div id="Fullist" class="tabcontent">
     <h3>All opened pull requests:</h3>
     ${pulltable(table_id='PRFullList', pullist=report_data.full_list.container[report_data.default_section])}
 </div>
-
 <div id="ByRepo" class="tabcontent">
     <h3>Pull requests sorted by repository</h3>
     <div class="tabcontent_inner">
@@ -331,7 +322,6 @@
         </div>
     </div>
 </div>
-
 <div id="Configuration" class="tabcontent">
     <h2>Configuration used for this report creation</h2>
     <h3>Team members filter:</h3>
@@ -347,7 +337,6 @@
         % endfor
     </ul>
 </div>
-
 <script>
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
@@ -362,7 +351,6 @@
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
     }
-
     document.getElementById("defaultOpen").click();
 
     function openInnerTab(evt, tabName) {
@@ -379,7 +367,6 @@
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
     }
-
 </script>
 </body>
 </html>

@@ -6,7 +6,7 @@ from colorama import Fore, Style
 
 from GprrRoutins import GprrReport
 from globals import CONFIGURATION, DEFAULT_CONFIG_FILE, APPCONFIG_SECTION, TEAM_FILTER_SECTION, REPO_FILTER_SECTION, \
-    ACCESS_TOKEN, ORGANIZATION, HTML_REPORT_FILE_NAME, MINIFY_REPORT
+    ACCESS_TOKEN, ORGANIZATION, HTML_REPORT_FILE_NAME, MINIFY_REPORT, STRICT_TO_TEAM
 
 if __name__ == "__main__":
     # for debug uncomment line below
@@ -61,7 +61,11 @@ if __name__ == "__main__":
             CONFIGURATION[APPCONFIG_SECTION][HTML_REPORT_FILE_NAME])
         report = GprrReport(token=accessToken, org=organization)
         print(f"{Fore.BLUE}Collecting data: ", end='')
-        report.collect_data(repofilter, teamfilter)
+        report.collect_data(
+            repofilter,
+            teamfilter,
+            bool((CONFIGURATION[APPCONFIG_SECTION][STRICT_TO_TEAM]).lower() == "true")
+        )
         print(f"{Fore.GREEN}Done{Style.RESET_ALL}")
         print(f"{Fore.BLUE}Generating html report: ", end='')
         report.generate_html_report(
