@@ -6,6 +6,7 @@
                     <div class="cell">PR Id</div>
                     <div class="cell">PR number</div>
                     <div class="cell">Repo</div>
+                    <div class="cell">Base branch</div>
                     <div class="cell">Author</div>
                     <div class="cell">Title</div>
                     <div class="cell">Flags</div>
@@ -21,21 +22,27 @@
             %>
                  <div class="row">
                     <div class="cell">${i}</div>
-                    <div class="cell"><a href="${str(pull.html_url)}">${str(pull.id)}</a></div>
-                    <div class="cell"><a href="${str(pull.html_url)}">${str(pull.number)}</a></div>
-                    <div class="cell"><a href="${str(pull.head.repo.html_url)}">${str(pull.head.repo.name)}</a></div>
-                    <div class="cell"><a href="${pull.user.html_url}">${str(pull.user.name)}</a></div>
-                    <div class="cell">${str(pull.title)}</div>
+                    <div class="cell"><a href="${str(pull.url)}">${str(pull.id)}</a></div>
+                    <div class="cell"><a href="${str(pull.url)}">${str(pull.number)}</a></div>
+                    <div class="cell"><a href="${pull.repository.url}">${pull.repository.name}</a></div>
+                    <div class="cell">${pull.initial_branch}</div>
+                    <div class="cell"><a href="${pull.creator.url}">${str(pull.creator.name)}</a></div>
+                    <div class="cell">${pull.title}</div>
 
                     <div class="cell">
-                        Draft: ${str(pull.draft)}<br/>
-                        Mergeable: ${str(pull.mergeable)}<br/>
-                        Mergeable State: ${str(pull.mergeable_state)}<br/>
-                        % if pull.get_labels().totalCount != 0:
+                        % for flag in pull.flags:
+                        ${flag.flag_name}: ${flag.value}<br/>
+                        % endfor
+                        % if len(pull.labels) != 0:
                         Labels: <br/>
                         <ul class="labels">
-                            % for label in pull.get_labels():
-                               <li style="background-color:#${label.color}">${label.name}</li>
+                            % for label in pull.labels:
+                               <li><span style="background-color:#${label.color}"></span><strong>${label.title}</strong>
+                                   % if label.description:
+                                   <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAABwklEQVRIia3WwWpTURAG4K9BsKBbQZtYtAm0K6m46TuosdvSRxDrQtv3cFnUjataLVUx+BJ9BYOg1rW6ak2MizOXEzX33ij5Ycidk5l/5sw9M+fOqcYi7uAmrqAV65/wAW/xGh9reP5CE7sYYFQjQ+xHAlNhHd/D+QR72MAyzoUsx9rzsBnhG7p15PcjoxFeYmmKhNo4GNvNVlXmQ6ksD6Yg/hMPw39owk5aclmqyC9LL74M23K5Fsb/eCqXpQzXpN0NcL3C7jC4HhcLi+F0orrm0wboBNdAHOt7EXGvwqnApZA67AfnXXgXykaN0yreh6zW2G4GZ++MtCU4qnGal0s4X2NbcLUbuBjKlxqnf8Hn+G02Zkg6joL3ZwPHoSyUGP8PCq7jBvqh3JhhgIKr30AvlPUZBii4eqT2LxqtXeG0Jo/otQq7Dk7xQ74/PAnHgxkEeBU2u+OLTWlAjaSpOAlnpT5YiudJ2AmOryZ0fFcet9sVGZZhZ8z/dpnRlnzhHMpdXoWOXJahNNsq0ZXLdSoNrk2s4HzISqy9CJuiLLemSAhcwCPpJExz6T9TMmXnagK15M+Wq37/bOlL5/xN6BPxCzjhhkZKaDSgAAAAAElFTkSuQmCC"/>
+                                   <p class="hint">${label.description}</p>
+                                   % endif
+                               </li>
                             % endfor
                         </ul>
                         % endif
@@ -44,37 +51,25 @@
                 <div class="cell">
                     <ul class="assignee">
                         % for assignee in pull.assignees:
-                            <li><a href="${assignee.html_url}">${assignee.name}</a></li>
+                            <li><a href="${assignee.url}">${assignee.name}</a></li>
                         % endfor
                     </ul>
                 </div>
                 <div class="cell">
                     <p>Review statuses:</p>
                     <ul class="reviews">
-                        <%
-                          review_statuses = {}
-                          for review in pull.get_reviews():
-                              if review.user.name not in review_statuses:
-                                  review_statuses[review.user.name] = []
-                              review_list = review_statuses[review.user.name]
-                              review_list.append(review)
-                              review_statuses[review.user.name] = review_list
-                        %>
-                        % for reviewer, review_list in review_statuses.items():
-                      <li><strong>${reviewer}</strong> - <a href="${review_list[0].html_url}" >${review_list[0].state}</a> at ${(review_list[0].submitted_at).strftime("%d %b %Y %H:%M")}</li>
+
+                        % for review in pull.reviews:
+                      <li><strong>${review.user.name}</strong> - <a href="${review.url}">${review.state}</a> at ${(review.submitted_at).strftime("%d %b %Y %H:%M")}</li>
                         % endfor
-                        % for revs in pull.get_review_requests()[0]:
-                      <li><a href="${revs.html_url}"><strong>${revs.name}</strong></a> - PENDING</li>
+                        % for revs in pull.reviews_pending:
+                      <li><a href="${revs.url}"><strong>${revs.user.name}</strong></a> - ${revs.state}</li>
                         % endfor
                     </ul>
                 </div>
-                <div class="cell">${str(pull.created_at.strftime("%d %b %Y %H:%M"))}</div>
-                <div class="cell">${str(pull.updated_at.strftime("%d %b %Y %H:%M"))}</div>
-                <%
-                    updated = pull.updated_at
-                    days_since_last_update = datetime.datetime.today() - updated
-                %>
-                <div class="cell">${str(days_since_last_update.days)}</div>
+                <div class="cell">${str(pull.created.strftime("%d %b %Y %H:%M"))}</div>
+                <div class="cell">${str(pull.updated.strftime("%d %b %Y %H:%M"))}</div>
+                <div class="cell">${str(pull.since_updated)}</div>
             </div>
             % endfor
         </div>

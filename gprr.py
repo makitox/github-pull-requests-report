@@ -1,18 +1,22 @@
-from github import Github
+from datetime import datetime
+from typing import Set
+
+from github import Github, enable_console_debug_logging
 from colorama import Fore, Style
+
+from GprrRoutins import GprrReport
 from globals import CONFIGURATION, DEFAULT_CONFIG_FILE, APPCONFIG_SECTION, TEAM_FILTER_SECTION, REPO_FILTER_SECTION, \
-    ACCESS_TOKEN, ORGANIZATION
-from htmlreport import generate_report
-
-
+    ACCESS_TOKEN, ORGANIZATION, HTML_REPORT_FILE_NAME, MINIFY_REPORT, STRICT_TO_TEAM
 
 if __name__ == "__main__":
     # for debug uncomment line below
     # enable_console_debug_logging()
 
+    # TODO[makitox]: replace print() with logger
+    # TODO[makitox]: add parameters checking, especially for requared ones
+
     print(f"{Fore.BLUE}Read configuration: {Style.RESET_ALL}", end='')
     import sys
-
     if len(sys.argv) > 1:
         configFile = sys.argv[1]
         CONFIGURATION.read(configFile)
@@ -42,27 +46,33 @@ if __name__ == "__main__":
         github = Github(accessToken)
         print(f"{Fore.BLUE}Access user: {Fore.GREEN}{github.get_user().name}{Style.RESET_ALL}")
         organizations = []
-        teamfilter = set()
-        repofilter = set()
-        if CONFIGURATION[APPCONFIG_SECTION][ORGANIZATION] is not None:  # organization provided. create report only for this org
-            filteredOrg = CONFIGURATION[APPCONFIG_SECTION][ORGANIZATION]
-            org = github.get_organization(filteredOrg)
-            organizations.append(org)
-            print(f"{Fore.BLUE}Organization filter: {Fore.GREEN}{org.login}{Style.RESET_ALL}")
+        teamfilter: Set[str] = set()
+        repofilter: Set[str] = set()
 
-        else:  # organization is not provided. create report for all user's organizations
-            for org in github.get_user().get_orgs():
-                organizations.append(org)
-                org.get_repos()
-                print(f"{Fore.BLUE}Organization: {Fore.GREEN}{org.name}{Style.RESET_ALL}")
+        organization = CONFIGURATION[APPCONFIG_SECTION][ORGANIZATION]
+        assert organization is not None
 
         for teammember in CONFIGURATION[TEAM_FILTER_SECTION]:
             teamfilter.add(teammember)
         for repo in CONFIGURATION[REPO_FILTER_SECTION]:
             repofilter.add(repo)
 
-        # here we have all needed organizations. lets create report for them
-        generate_report(organizations, teamfilter, repofilter)
+        html_report_name = datetime.today().strftime(
+            CONFIGURATION[APPCONFIG_SECTION][HTML_REPORT_FILE_NAME])
+        report = GprrReport(token=accessToken, org=organization)
+        print(f"{Fore.BLUE}Collecting data: ", end='')
+        report.collect_data(
+            repofilter,
+            teamfilter,
+            bool((CONFIGURATION[APPCONFIG_SECTION][STRICT_TO_TEAM]).lower() == "true")
+        )
+        print(f"{Fore.GREEN}Done{Style.RESET_ALL}")
+        print(f"{Fore.BLUE}Generating html report: ", end='')
+        report.generate_html_report(
+            filename=html_report_name,
+            minimy_html=bool((CONFIGURATION[APPCONFIG_SECTION][MINIFY_REPORT]).lower() == "true")
+        )
+        print(f"{Fore.GREEN}Done{Style.RESET_ALL}")
     else:
         print(f"{Fore.RED}Missing {ACCESS_TOKEN}. Exit with error{Style.RESET_ALL}")
         exit(1)
