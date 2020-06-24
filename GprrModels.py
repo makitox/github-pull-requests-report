@@ -20,6 +20,20 @@ class GprrUser(object):
         self.id = id
         self.url = url
 
+class GprrTeam(object):
+    """
+        Team representation in GPRR
+    """
+
+    def __init__(self, name: str, id: int, description: str = ""):
+        assert name is not None
+        assert id is not None
+
+        self.description: str = description
+        self.name: str = name
+        self.id: int = id
+        self.members: List[GprrUser] = []
+
 
 class GprrReview(object):
     """
@@ -85,6 +99,7 @@ class GprrPR(object):
         self.since_updated: int = None
         self.initial_branch: str = None
         self.initial_branch_url: str = None
+        self.review_teams: List[GprrTeam] = []
 
 
 class GprrRepository(object):

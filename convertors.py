@@ -5,8 +5,9 @@ from github.Label import Label
 from github.NamedUser import NamedUser
 from github.PullRequest import PullRequest
 from github.Repository import Repository
+from github.Team import Team
 
-from GprrModels import GprrUser, GprrRepository, GprrPrLabel, GprrReview, GprrPR, GprrPrFlag
+from GprrModels import GprrUser, GprrRepository, GprrPrLabel, GprrReview, GprrPR, GprrPrFlag, GprrTeam
 
 
 def convert_pr(pr: PullRequest) -> GprrPR:
@@ -50,10 +51,16 @@ def convert_pr(pr: PullRequest) -> GprrPR:
             )
             gprr_pr.reviews.append(gprr_review)
 
-    for revusr in pr.get_review_requests()[0]:  # this makes additional call to Github REST API
+    pr_review_requests = pr.get_review_requests()
+    for revusr in pr_review_requests[0]:  # this makes additional call to Github REST API
         usr = convert_user(revusr)
         review = GprrReview(user=usr, state="PENDING")
         gprr_pr.reviews_pending.append(review)
+
+    # for revteam in pr_review_requests[1]:
+    #     team_as_user = convert_team_to_user(revteam)
+    #     review = GprrReview(user=team_as_user, state="PENDING")
+    #     gprr_pr.reviews_pending.append(review)
 
     return gprr_pr
 
@@ -82,7 +89,15 @@ def convert_repo(repo: Repository) -> GprrRepository:
     if repo is not None:
         return GprrRepository(id=repo.id, title=repo.description, url=repo.html_url, name=repo.name)
     else:
-        return GprrRepository(id=-1, title="", url="#", name="unknown repository (might be private fork")
+        return GprrRepository(id=-1, title="", url="#", name="unknown repository (might be a private fork")
+
+
+def convert_team(team: Team) -> GprrTeam:
+    return GprrTeam(team.name, team.id, team.description)
+
+
+def convert_team_to_user(team: Team) -> GprrUser:
+    return GprrUser(team.name, team.description, "#", team.id)
 
 
 def known_review(active_reviewers: List[GprrUser], user: GprrUser) -> bool:
