@@ -7,7 +7,7 @@ idna==2.9
 Mako==1.1.2
 MarkupSafe==1.1.1
 PyGithub==1.51
-PyJWT==1.7.1
+PyJWT==2.4.0
 requests==2.23.0
 urllib3==1.25.9
 wrapt==1.12.1
