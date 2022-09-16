@@ -4,7 +4,7 @@ colorama==0.4.3
 Deprecated==1.2.10
 htmlmin==0.1.12
 idna==2.9
-Mako==1.1.2
+Mako==1.2.2
 MarkupSafe==1.1.1
 PyGithub==1.51
 PyJWT==1.7.1
